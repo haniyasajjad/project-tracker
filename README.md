@@ -147,7 +147,7 @@ cd ../frontend
 npm install
 ```
 
-## ▶️ Running the Project
+## Running the Project
 
 ### Start the Backend:
 
@@ -167,7 +167,7 @@ npm start
 
 > Opens [http://localhost:3000](http://localhost:3000)
 
-## 🔄 Testing Real-Time Updates
+##  Testing Real-Time Updates
 
 1. Open [http://localhost:3000](http://localhost:3000) in a browser.
 2. Update a project using `psql`:
@@ -180,7 +180,7 @@ WHERE proid = 'proj1';
 
 3. The "Changed Projects" section should reflect the update in real-time.
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 project-tracker/
@@ -197,7 +197,7 @@ project-tracker/
 └── README.md
 ```
 
-## 🧩 Troubleshooting
+##  Troubleshooting
 
 **PostgreSQL Connection Errors**
 - Ensure PostgreSQL is running:  
