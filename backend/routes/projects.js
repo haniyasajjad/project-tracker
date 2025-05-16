@@ -40,4 +40,26 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.patch('/:id', async (req, res) => {
+    const { id } = req.params;
+    const { project_title } = req.body;
+
+    try {
+        const result = await pool.query(
+            'UPDATE projects SET project_title = $1 WHERE proid = $2 RETURNING *',
+            [project_title, id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Project not found' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (error) {
+        console.error('Error updating project:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 module.exports = router;

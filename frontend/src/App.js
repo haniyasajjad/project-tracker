@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
-import './App.css'; // Make sure this is being imported
+import './App.css';
 
 const socket = io('http://localhost:3001'); // Backend URL
 
@@ -10,6 +10,8 @@ function App() {
     const [page, setPage] = useState(1);
     const [pagination, setPagination] = useState({});
     const [changedProjects, setChangedProjects] = useState([]);
+    const [editingId, setEditingId] = useState(null);
+    const [editTitle, setEditTitle] = useState('');
 
     const fetchProjects = async () => {
         try {
@@ -42,11 +44,37 @@ function App() {
         };
     }, []);
 
+    const startEditing = (project) => {
+        setEditingId(project.proid);
+        setEditTitle(project.project_title);
+    };
+
+    const cancelEdit = () => {
+        setEditingId(null);
+        setEditTitle('');
+    };
+
+    const saveEdit = async (id) => {
+        try {
+            const response = await axios.patch(`http://localhost:3001/api/projects/${id}`, {
+                project_title: editTitle,
+            });
+
+            setProjects((prev) =>
+                prev.map((p) => (p.proid === id ? { ...p, project_title: editTitle } : p))
+            );
+            setEditingId(null);
+            setEditTitle('');
+        } catch (error) {
+            console.error('Error updating project:', error);
+        }
+    };
+
     return (
         <div className="container">
             <header>
-                <h1>📊 Project Tracker</h1>
-                <h2>🟢 Real-Time Updates</h2>
+                <h1>Project Tracker</h1>
+                <h2>Updated Projects:</h2>
             </header>
 
             <section className="updates">
@@ -68,7 +96,22 @@ function App() {
                 <ul>
                     {projects.map((project) => (
                         <li key={project.proid}>
-                            <strong>{project.project_title}</strong> — Status: {project.status}
+                            {editingId === project.proid ? (
+                                <>
+                                    <input
+                                        type="text"
+                                        value={editTitle}
+                                        onChange={(e) => setEditTitle(e.target.value)}
+                                    />
+                                    <button onClick={() => saveEdit(project.proid)}>💾 Save</button>
+                                    <button onClick={cancelEdit}>❌ Cancel</button>
+                                </>
+                            ) : (
+                                <>
+                                    <strong>{project.project_title}</strong> — Status: {project.status}
+                                    <button className="edit-btn" onClick={() => startEditing(project)}>✏️ Edit</button>
+                                </>
+                            )}
                         </li>
                     ))}
                 </ul>
