@@ -34,7 +34,7 @@ async function setupPostgresListener() {
         await client.query('LISTEN project_changes');
         client.on('notification', (msg) => {
             const payload = JSON.parse(msg.payload);
-            io.emit('projectUpdate', payload); // Broadcast changes to all clients
+            io.emit('projectUpdate', payload); 
         });
     } catch (error) {
         console.error('Error setting up listener:', error);
